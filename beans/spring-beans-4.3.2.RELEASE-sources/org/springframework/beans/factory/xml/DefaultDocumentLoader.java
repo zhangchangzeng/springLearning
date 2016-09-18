@@ -31,7 +31,8 @@ import org.springframework.util.xml.XmlValidationModeDetector;
 
 /**
  * Spring's default {@link DocumentLoader} implementation.
- *
+ * spring µÄDocumentLoader ÊµÏÖ
+ * 
  * <p>Simply loads {@link Document documents} using the standard JAXP-configured
  * XML parser. If you want to change the {@link DocumentBuilder} that is used to
  * load documents, then one strategy is to define a corresponding Java system property

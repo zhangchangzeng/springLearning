@@ -45,6 +45,7 @@ import org.springframework.util.StringUtils;
  * Static convenience methods for JavaBeans: for instantiating beans,
  * checking bean property types, copying bean properties, etc.
  *
+ * 操作JavaBeans 的一组静态方法
  * <p>Mainly for use within the framework, but to some degree also
  * useful for application classes.
  *
@@ -86,6 +87,7 @@ public abstract class BeanUtils {
 
 	/**
 	 * Instantiate a class using its no-arg constructor.
+	 * 使用空参构造实例化一个类
 	 * <p>Note that this method tries to set the constructor accessible
 	 * if given a non-accessible (that is, non-public) constructor.
 	 * @param clazz class to instantiate
