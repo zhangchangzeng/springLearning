@@ -120,5 +120,4 @@ public class XmlBeanFactory extends DefaultListableBeanFactory {
 		super(parentBeanFactory);
 		this.reader.loadBeanDefinitions(resource);
 	}
-
 }
