@@ -132,6 +132,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Create new XmlBeanDefinitionReader for the given bean factory.
 	 * @param registry the BeanFactory to load bean definitions into,
 	 * in the form of a BeanDefinitionRegistry
+	 * 为给定的beand factory 创建一个新的XmlBeanDefinitionReader ,以BeanDefinitionRegistry 的形式将bean的定义
+	 * 加载到工厂中
 	 */
 	public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		super(registry);
@@ -542,6 +544,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see #setDocumentReaderClass
 	 */
 	protected BeanDefinitionDocumentReader createBeanDefinitionDocumentReader() {
+		// 使用反射创建
 		return BeanDefinitionDocumentReader.class.cast(BeanUtils.instantiateClass(this.documentReaderClass));
 	}
 

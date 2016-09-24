@@ -969,11 +969,14 @@ public abstract class StringUtils {
 	/**
 	 * Tokenize the given {@code String} into a {@code String} array via a
 	 * {@link StringTokenizer}.
+	 * 通过一个StringTokenizer 将给定的字符串切分到一个字符串数组中
 	 * <p>Trims tokens and omits empty tokens.
+	 * 修整标记并忽略空的标记
 	 * <p>The given {@code delimiters} string can consist of any number of
 	 * delimiter characters. Each of those characters can be used to separate
 	 * tokens. A delimiter is always a single character; for multi-character
 	 * delimiters, consider using {@link #delimitedListToStringArray}.
+	 * 
 	 * @param str the {@code String} to tokenize
 	 * @param delimiters the delimiter characters, assembled as a {@code String}
 	 * (each of the characters is individually considered as a delimiter)
@@ -997,7 +1000,9 @@ public abstract class StringUtils {
 	 * @param delimiters the delimiter characters, assembled as a {@code String}
 	 * (each of the characters is individually considered as a delimiter)
 	 * @param trimTokens trim the tokens via {@link String#trim()}
+	 * 去空表示，如果为true则去除字符串中的空格
 	 * @param ignoreEmptyTokens omit empty tokens from the result array
+	 * 去空串表示，如果为真并且字符串的长度大于零则保存，如果为真且字符串的长度不大于零则舍弃
 	 * (only applies to tokens that are empty after trimming; StringTokenizer
 	 * will not consider subsequent delimiters as token in the first place).
 	 * @return an array of the tokens ({@code null} if the input {@code String}

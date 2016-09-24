@@ -69,9 +69,12 @@ import org.springframework.util.xml.DomUtils;
 
 /**
  * Stateful delegate class used to parse XML bean definitions.
+ * 用于解析xml bean 定义的状态委托类
  * Intended for use by both the main parser and any extension
+ * 旨在用于主要解析器和任何的扩展解析器
+ * 
  * {@link BeanDefinitionParser BeanDefinitionParsers} or
- * {@link BeanDefinitionDecorator BeanDefinitionDecorators}.
+ * {@link BeanDefinitionDecorator BeanDefinitionDecorators}. 
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -256,6 +259,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Create a new BeanDefinitionParserDelegate associated with the supplied
 	 * {@link XmlReaderContext}.
+	 * 根据提供的XML读取上下文环境XmlReaderContext,创建一个新的委托
 	 */
 	public BeanDefinitionParserDelegate(XmlReaderContext readerContext) {
 		Assert.notNull(readerContext, "XmlReaderContext must not be null");
@@ -318,9 +322,11 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Initialize the default lazy-init, autowire, dependency check settings,
-	 * init-method, destroy-method and merge settings. Support nested 'beans'
-	 * element use cases by falling back to the given parent in case the
+	 * init-method, destroy-method and merge settings.
+	 * 初始化默认的 懒加载，自动装配，依赖检查设置，初始化方法，销毁方法和合并设置
+	 * Support nested 'beans' element use cases by falling back to the given parent in case the
 	 * defaults are not explicitly set locally.
+	 * 当这些默认的设置没有明确的本地设置的时候，支持嵌套的bean元素使用给予的parent委托
 	 * @see #populateDefaults(DocumentDefaultsDefinition, DocumentDefaultsDefinition, org.w3c.dom.Element)
 	 * @see #getDefaults()
 	 */
@@ -339,10 +345,12 @@ public class BeanDefinitionParserDelegate {
 	 * @param root the root element of the current bean definition document (or nested beans element)
 	 */
 	protected void populateDefaults(DocumentDefaultsDefinition defaults, DocumentDefaultsDefinition parentDefaults, Element root) {
-		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(lazyInit)) {
+	
+		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE); //default-lazy-init
+		if (DEFAULT_VALUE.equals(lazyInit)) { //default
+		
 			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
-			lazyInit = (parentDefaults != null ? parentDefaults.getLazyInit() : FALSE_VALUE);
+			lazyInit = (parentDefaults != null ? parentDefaults.getLazyInit() : FALSE_VALUE); // false
 		}
 		defaults.setLazyInit(lazyInit);
 
@@ -424,6 +432,7 @@ public class BeanDefinitionParserDelegate {
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
+	 * 解析提供给的<bean>元素，可能返回null，如果在解析的过程中发生错误，错误将会被报告给ProblemReporter类
 	 */
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele) {
 		return parseBeanDefinitionElement(ele, null);
@@ -435,16 +444,19 @@ public class BeanDefinitionParserDelegate {
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
 	 */
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, BeanDefinition containingBean) {
-		String id = ele.getAttribute(ID_ATTRIBUTE);
-		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+		String id = ele.getAttribute(ID_ATTRIBUTE); // ID_ATTRIBUTE "id"
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);// NAME_ATTRIBUTE "name"
 
 		List<String> aliases = new ArrayList<String>();
+		
 		if (StringUtils.hasLength(nameAttr)) {
-			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
+			//MULTI_VALUE_ATTRIBUTE_DELIMITERS ",; "
+			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS); 
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
 		String beanName = id;
+		// 如果beanName为空（null或长度不大于零或都是空格）和aliases不为空
 		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
 			if (logger.isDebugEnabled()) {
@@ -452,7 +464,7 @@ public class BeanDefinitionParserDelegate {
 						"' as bean name and " + aliases + " as aliases");
 			}
 		}
-
+		// 检查beanName和aliases 有没有已经被使用
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
@@ -497,13 +509,16 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Validate that the specified bean name and aliases have not been used already
 	 * within the current level of beans element nesting.
+	 * 验证指定的bean名称和别名还没有在当前嵌套的级别中被使用
 	 */
 	protected void checkNameUniqueness(String beanName, List<String> aliases, Element beanElement) {
 		String foundName = null;
-
+		// StringUtils.hasText(beanName) 不为空 
+		// usedNames中有beanName
 		if (StringUtils.hasText(beanName) && this.usedNames.contains(beanName)) {
 			foundName = beanName;
 		}
+		// 检查usedNames 是否有aliases
 		if (foundName == null) {
 			foundName = CollectionUtils.findFirstMatch(this.usedNames, aliases);
 		}
@@ -518,6 +533,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
+	 * 在不考虑名称和别名的情况下，解析bean本身，如果在解析bean定义的过程中出现错误，可能会返回null
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionElement(
 			Element ele, String beanName, BeanDefinition containingBean) {
@@ -525,15 +541,18 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
+		if (ele.hasAttribute(CLASS_ATTRIBUTE)) { // CLASS_ATTRIBUTE = "class"
+			// 读取class属性
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 
 		try {
 			String parent = null;
-			if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
+			if (ele.hasAttribute(PARENT_ATTRIBUTE)) { // PARENT_ATTRIBUTE = "parent"
+				// 读取parent属性
 				parent = ele.getAttribute(PARENT_ATTRIBUTE);
 			}
+			// 获取AbstractBeanDefinition 一个bean定义容器
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
@@ -578,10 +597,11 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
-		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
+		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) { // String SINGLETON_ATTRIBUTE = "singleton"
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
-		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
+		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) { // String SCOPE_ATTRIBUTE = "scope"
+			// 设置scope
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 		}
 		else if (containingBean != null) {
@@ -589,12 +609,13 @@ public class BeanDefinitionParserDelegate {
 			bd.setScope(containingBean.getScope());
 		}
 
-		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
+		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) { // String ABSTRACT_ATTRIBUTE = "abstract"
+			// 设置abstractFlag
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
-		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
-		if (DEFAULT_VALUE.equals(lazyInit)) {
+		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE); // String LAZY_INIT_ATTRIBUTE = "lazy-init"
+		if (DEFAULT_VALUE.equals(lazyInit)) { // String DEFAULT_VALUE = "default"
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
@@ -662,6 +683,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Create a bean definition for the given class name and parent name.
+	 * 用给定的class名和parent名创建一个AbstractBeanDefinition
 	 * @param className the name of the bean class
 	 * @param parentName the name of the bean's parent bean
 	 * @return the newly created bean definition
@@ -1497,6 +1519,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Determine whether the name of the supplied node is equal to the supplied name.
+	 * 判断提供的node的名气是否与提供的名字相同
 	 * <p>The default implementation checks the supplied desired name against both
 	 * {@link Node#getNodeName()} and {@link Node#getLocalName()}.
 	 * <p>Subclasses may override the default implementation to provide a different

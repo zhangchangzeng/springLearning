@@ -58,6 +58,7 @@ import org.springframework.util.StringUtils;
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
 
 	public static final String BEAN_ELEMENT = BeanDefinitionParserDelegate.BEAN_ELEMENT;
+	
 
 	public static final String NESTED_BEANS_ELEMENT = "beans";
 
@@ -113,16 +114,25 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**
 	 * Register each bean definition within the given root {@code <beans/>} element.
+	 * 注册<beans/> 元素内的bean定义
 	 */
 	protected void doRegisterBeanDefinitions(Element root) {
-		// Any nested <beans> elements will cause recursion in this method. In
-		// order to propagate and preserve <beans> default-* attributes correctly,
-		// keep track of the current (parent) delegate, which may be null. Create
-		// the new (child) delegate with a reference to the parent for fallback purposes,
+		// Any nested <beans> elements will cause recursion in this method. .
+		// 任何嵌套的<beans> 都会在这个方法中递归读取
+		// In order to propagate and preserve <beans> default-* attributes correctly,
+		// 为了能正确的传播和保留<beans> default-* 属性
+		// keep track of the current (parent) delegate, which may be null. 
+		// 保留现有的可能为空的delegate(parent)
+		// Create the new (child) delegate with a reference to the parent for fallback purposes,
+		// 为了能够达到返回的目的，使用parent引用创建一个新的委托((child)delegate) ,
 		// then ultimately reset this.delegate back to its original (parent) reference.
+		// 故最终可以将this.delegate重新设置会原来的(parent)委托
 		// this behavior emulates a stack of delegates without actually necessitating one.
-		BeanDefinitionParserDelegate parent = this.delegate;
-		this.delegate = createDelegate(getReaderContext(), root, parent);
+		// 这个操作模拟一个委托栈而不用真正的创建一个
+		
+		BeanDefinitionParserDelegate parent = this.delegate; // 保留原有的委托
+		
+		this.delegate = createDelegate(getReaderContext(), root, parent); // 使用原有的委托创建一个新的委托
 
 		if (this.delegate.isDefaultNamespace(root)) {
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
@@ -145,7 +155,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 		this.delegate = parent;
 	}
-
+	/**
+	* 使用原有的委托和readerContext 读取上下文环境，root 创建一个新的的委托
+	*/
 	protected BeanDefinitionParserDelegate createDelegate(
 			XmlReaderContext readerContext, Element root, BeanDefinitionParserDelegate parentDelegate) {
 
@@ -170,6 +182,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
 					}
 					else {
+						// 自定义标签的解析
 						delegate.parseCustomElement(ele);
 					}
 				}
@@ -179,19 +192,23 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			delegate.parseCustomElement(root);
 		}
 	}
-
+	// 默认标签的解析
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
-		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
+		// 对import标签进行处理
+		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) { //IMPORT_ELEMENT  import
 			importBeanDefinitionResource(ele);
 		}
-		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+		// 对alias标签进行处理 
+		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) { // ALIAS_ELEMENT alias
 			processAliasRegistration(ele);
 		}
-		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+		// 对bean标签进行处理 
+		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) { // BEAN_ELEMENT bean
 			processBeanDefinition(ele, delegate);
 		}
-		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
-			// recurse
+		// 对beans标签进行递归处理
+		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) { // NESTED_BEANS_ELEMENT beans
+			// recurse 递归
 			doRegisterBeanDefinitions(ele);
 		}
 	}
@@ -295,6 +312,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Process the given bean element, parsing the bean definition
 	 * and registering it with the registry.
+	 * 解析给定的bean元素，解析bean的定义同时注册到注册表中
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
