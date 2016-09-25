@@ -21,9 +21,11 @@ import org.springframework.core.io.Resource;
 /**
  * Simple implementation of {@link SourceExtractor} that returns {@code null}
  * as the source metadata.
+ * SourceExtractor 的简单实现，返回null作为资源元数据
  *
  * <p>This is the default implementation and prevents too much metadata from being
  * held in memory during normal (non-tooled) runtime usage.
+ * 这是默认实现，防止在正常运行中内存中有过多的数据
  *
  * @author Rob Harrop
  * @since 2.0
@@ -32,6 +34,7 @@ public class NullSourceExtractor implements SourceExtractor {
 
 	/**
 	 * This implementation simply returns {@code null} for any input.
+	 * 返回空
 	 */
 	@Override
 	public Object extractSource(Object sourceCandidate, Resource definitionResource) {
