@@ -222,10 +222,14 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	/**
 	 * Return an instance, which may be shared or independent, of the specified bean.
+	 * 返回一个共享的或者独立的指定bean名称的实例
 	 * @param name the name of the bean to retrieve
+	 * 要获取的bean名称
 	 * @param requiredType the required type of the bean to retrieve
+	 * 要获取的bean的类型
 	 * @param args arguments to use when creating a bean instance using explicit arguments
 	 * (only applied when creating a new instance as opposed to retrieving an existing one)
+	 * 当使用明确的参数创建bean时候的参数（当创建一个实例和返回一个已经存在的实例冲突时使用）
 	 * @param typeCheckOnly whether the instance is obtained for a type check,
 	 * not for actual use
 	 * @return an instance of the bean
